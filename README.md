@@ -1,4 +1,5 @@
-# Struggle for Balance time convertor
+[![MIT License][license-image]][license-url][![Code Climate](https://codeclimate.com/github/AdwinTrave/SfB-time-convertor/badges/gpa.svg)](https://codeclimate.com/github/AdwinTrave/SfB-time-convertor)
+# Struggle for Balance time converter
 Hello this is my little project for my universe which allows to convert time and dates from Earth Standard Time to Universal Standard Time which is the common time unit in my fictional universe.
 
 ## Background
@@ -24,4 +25,7 @@ To make things complicated starting in 2400 there was a calendar reform that mad
 Imperial Standard Time is a time unit that was used by the Grimnaar and begins dating from the establishment of the united empire. Often times Grimnaar still refer to event in "before empire" and "during empire".
 
 ## Future plans
-The plans are to improve the convertor with few more features described in the issues and hopefully later add more times like the mentioned IST.
+The plans are to improve the converter with few more features described in the issues and hopefully later add more times like the mentioned IST.
+
+[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
+[license-url]: LICENSE
