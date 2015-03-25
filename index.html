@@ -1,0 +1,179 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>SfB time convertor</title>
+  <meta name="description" content="Struggle for Balance time convertors">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link rel="stylesheet" href="css/foundation.css" />
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <script src="js/vendor/modernizr.js"></script>
+</head>
+<body>
+  <!--[if lt IE 8]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  <div class="contain-to-grid sticky">
+    <nav class="top-bar" data-topbar role="navigation">
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="#">SfB time convertors</a></h1>
+        </li>
+         <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+      </ul>
+
+      <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+          <li class="has-dropdown">
+            <a href="#">More about this</a>
+            <ul class="dropdown">
+              <li><a href="https://github.com/AdwinTrave/SfB-time-convertor">Github</a></li>
+              <li><a href="#">About the universe</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Left Nav Section -->
+        <ul class="left">
+          <li><a href="#intro">Clocks</a></li>
+          <li><a href="#convertors">Convertors</a></li>
+        </ul>
+      </section>
+    </nav>
+  </div>
+
+  <main class="row">
+    <section class="medium-12 columns" id="alerts" tabindex="0" aria-live="assertive" role="dialogalert">
+      <div data-alert class="alert-box warning">
+        This is a work in progress.
+        <a href="#" class="close" tabindex="0" aria-label="Close Alert">&times;</a>
+      </div>
+    </section>
+
+    <section class="medium-12 columns" id="intro">
+      <h1>Struggle for Balance time clocks convertors</h1>
+      <p>
+        There are many times in the galaxy. In order for better communication and coordination the Standard Universal Time was established.
+      </p>
+    </section>
+
+    <section class="medium-12 columns" id="current">
+      <h3 class="subheader">Today</h3>
+      <!-- current today's time on planet Earth -->
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">GMT / Earth Standard time</li>
+          <li class="price" id="todayGMT"></li>
+        </ul>
+      </div>
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">Local time</li>
+          <li class="price" id="todayLocal"></li>
+        </ul>
+      </div>
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">Standard Universal Time countdown</li>
+          <li class="price" id="sutCountdown"></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="medium-12 columns" id="future">
+      <!-- time to establishment of UST -->
+      <h3 class="text-center">UST will be established <span id="toUst"></span></h3>
+
+      <!-- add 4 centruries to current time -->
+      <h3 class="subheader">Some SUT clocks</h3>
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">What here?</li>
+          <li class="price" id="???"></li>
+        </ul>
+      </div>
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">Curent SUT</li>
+          <li class="price" id="curentSUT"></li>
+        </ul>
+      </div>
+      <div class="medium-4 columns">
+        <ul class="pricing-table">
+          <li class="title">SUT time past</li>
+          <li class="price" id="passedSUT"></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="medium-12 columns" id="convertors">
+      <h3 class="subheader">Convertors</h3>
+      <form id="eyToSUTY">
+        <fieldset>
+          <legend>Earth Years to SUT Years</legend>
+          <div class="row">
+            <div class="large-6 columns">
+              <div class="row collapse">
+                <div class="small-10 columns">
+                  <input id="eyToSUTYInput" type="number" placeholder="Earth Years" maxlength="8" required>
+                </div>
+                <div class="small-2 columns">
+                  <input type="submit" class="button postfix" value="Calculate">
+                </div>
+              </div>
+            </div>
+            <div class="large-6 columns">
+              <article id="eyToSUTYResult" class="panel">
+
+              </article>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <form id="sutToEY">
+        <fieldset>
+          <legend>SUT Years to Earth Years</legend>
+          <div class="row">
+            <div class="large-6 columns">
+              <div class="row collapse">
+                <div class="small-10 columns">
+                  <input id="sutToEYInput" type="number" placeholder="SUT Years" maxlength="8" required>
+                </div>
+                <div class="small-2 columns">
+                  <input type="submit" class="button postfix" value="Calculate">
+                </div>
+              </div>
+            </div>
+            <div class="large-6 columns">
+              <article id="sutToEYResult" class="panel">
+
+              </article>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
+  <script src="js/vendor/jquery.js"></script>
+  <script src="js/foundation.min.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
+  <script src="js/vendor/moment.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
