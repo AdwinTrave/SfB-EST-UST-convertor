@@ -7,9 +7,6 @@ var sutHourSec = sutMinuteSec * 100;
 var sutDaySec = sutHourSec * 10;
 var sutYearSec = sutDaySec * 500;
 
-
-
-
 var earthYearReformedSec = 31622400;
 
 $(function(){
@@ -90,7 +87,7 @@ function curentSUT(){
 
   //@todo extrapolate into new funtion that should be able to deal with both pre and SUT times, not just pre-SUT
   //years and days will go the same way as with countdown, but the clock needs to go forward
-  var secondsNew, minutes, hours, days, years, dayBegin;
+  var secondsNew, minutes, hours, days, years, dayBegin, hoursDown, minutesDown;
   years = Math.floor(seconds / sutYearSec);
   days = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
   //find out at what second has the day begun when day has begun
@@ -148,8 +145,7 @@ function defaultZeros(number, defaultExtraZeroes){
 
   switch(defaultExtraZeroes)
   {
-    case 0:
-    default: return number; break;
+    case 0: /* no need to do anything */ break;
     case 1:
       if(number < 10)
       {
@@ -166,6 +162,7 @@ function defaultZeros(number, defaultExtraZeroes){
         return "0"+number;
       }
       break;
+      default: break;
   }
 
   return number;
