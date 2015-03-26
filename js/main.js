@@ -28,14 +28,30 @@ $(function(){
   curentSUT();
 
   //forms
+  //Earth year to SUT year
   $("#eyToSUTY").submit(function(event){
     event.preventDefault();
     $("#eyToSUTYResult").text( earthYearsToSUT($("#eyToSUTYInput").val()) );
   });
 
+  //SUT year to Earth year
   $("#sutToEY").submit(function(event){
     event.preventDefault();
     $("#sutToEYResult").text( SUTyearsToEarth($("#sutToEYInput").val()) );
+  });
+
+  //setup date picker for Earth year
+  $("#eDToSUTInput").fdatepicker({format:"yyyy-mm-dd"});
+  //Earth date to SUT
+  $("#eDToSUT").submit(function(event){
+    event.preventDefault();
+    $("#eDToSUTResult").text( earthDateToSUT($("#eDToSUTInput").val()) );
+  });
+
+  //SUT date to Earth date
+  $("#sutToED").submit(function(event){
+    event.preventDefault();
+    $("#sutToEDResult").text( sutDateToEY($("#sutToEDInput").val()) );
   });
 });
 
@@ -86,21 +102,22 @@ function curentSUT(){
   var seconds = sutStart.diff(moment(), 'seconds');
 
   //@todo extrapolate into new funtion that should be able to deal with both pre and SUT times, not just pre-SUT
-  //years and days will go the same way as with countdown, but the clock needs to go forward
+  //years will go the same way as with countdown, but the clock needs to go forward
   var secondsNew, minutes, hours, days, years, dayBegin, hoursDown, minutesDown;
   years = Math.floor(seconds / sutYearSec);
-  days = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
+  daysDown = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
   //find out at what second has the day begun when day has begun
-  dayBegin = (years * sutYearSec)+(days * sutDaySec);
+  dayBegin = (years * sutYearSec)+(daysDown * sutDaySec);
   //find the current time by determining how much time is left in the day
-  hours = 10 - Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec))) / sutHourSec );
-  hoursDown = Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec))) / sutHourSec );
-  minutes = 100 - Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec)+(hoursDown*sutHourSec))) / sutMinuteSec );
-  minutesDown = Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec)+(hoursDown*sutHourSec))) / sutMinuteSec );
-  secondsNew = 100 - (seconds -( (years * sutYearSec)+(days * sutDaySec)+(hoursDown*sutHourSec)+(minutesDown*sutMinuteSec)));
+  days = 500 - daysDown;
+  hoursDown = Math.floor( (seconds - ((years * sutYearSec)+(daysDown * sutDaySec))) / sutHourSec );
+  hours = 10 - hoursDown;
+  minutesDown = Math.floor( (seconds - ((years * sutYearSec)+(daysDown * sutDaySec)+(hoursDown*sutHourSec))) / sutMinuteSec );
+  minutes = 100 - minutesDown;
+  secondsNew = 100 - (seconds -( (years * sutYearSec)+(daysDown * sutDaySec)+(hoursDown*sutHourSec)+(minutesDown*sutMinuteSec)));
 
   //add default zeros
-  years = defaultZeros(years, 2);
+  years = defaultZeros(years, 2, true);
   days = defaultZeros(days, 2);
   hours = defaultZeros(hours, 1);
   minutes = defaultZeros(minutes, 1);
@@ -110,7 +127,7 @@ function curentSUT(){
   {
     years = "-"+years;
   }
-  $("#curentSUT").text(years + "." + days + " " + hours + ":" + minutes + ":" + secondsNew);
+  $("#curentSUT").text("SUT " + years + "." + days + " " + hours + ":" + minutes + ":" + secondsNew);
   setTimeout(curentSUT, 1000);
 }
 
@@ -128,7 +145,7 @@ function secondsToSUT(seconds){
   secondsNew = seconds - ( (years * sutYearSec)+(days * sutDaySec)+(hours*sutHourSec)+(minutes*sutMinuteSec) );
 
   //add default zeros
-  years = defaultZeros(years, 2);
+  years = defaultZeros(years, 2, true);
   days = defaultZeros(days, 2);
   hours = defaultZeros(hours, 1);
   minutes = defaultZeros(minutes, 1);
@@ -141,25 +158,81 @@ function secondsToSUT(seconds){
 /**
  * Account for default zeros in the given fields
  */
-function defaultZeros(number, defaultExtraZeroes){
+function defaultZeros(number, defaultExtraZeroes, minusBack = false){
+
+  number = number.toString();
 
   switch(defaultExtraZeroes)
   {
     case 0: /* no need to do anything */ break;
     case 1:
-      if(number < 10)
+      if(number < 0)
       {
-        return "0"+number;
+        //we have a negative value
+        //determine if any changes are needed
+        if(number.length !== 3)
+        {
+          //remove the minus sign
+          number = number.substring(1);
+
+          //determine how many zeroes will have to be added
+          if(number.length === 1)
+          {
+            number = "0" + number;
+          }
+
+          //add the minus sign back if this is a year or minus back is requested
+          if(minusBack)
+          {
+            number = "-" + number;
+          }
+        }
+      }
+      else
+      {
+        if(number < 10)
+        {
+          return "0"+number;
+        }
       }
       break;
     case 2:
-      if(number < 10)
+      if(number < 0)
       {
-        return "00"+number;
+        //we have a negative value
+        //determine if any changes are needed
+        if(number.length !== 4)
+        {
+          //remove the minus sign
+          number = number.substring(1);
+
+          //determine how many zeroes will have to be added
+          if(number.length === 1)
+          {
+            number = "00" + number;
+          }
+          if(number.length === 2)
+          {
+            number = "0" + number;
+          }
+
+          //add the minus sign back if this is a year or minus back is requested
+          if(minusBack)
+          {
+            number = "-" + number;
+          }
+        }
       }
-      if(number < 100)
+      else
       {
-        return "0"+number;
+        if(number < 10)
+        {
+          return "00"+number;
+        }
+        if(number < 100)
+        {
+          return "0"+number;
+        }
       }
       break;
       default: break;
@@ -177,7 +250,7 @@ function SUTyearsToEarth(sutYears){
 
   //@todo
   //we need to calculate ourselves the number of years as Moment.js is no use here
-  return Math.floor(seconds / earthYearReformedSec);
+  return Math.round((seconds / earthYearReformedSec)*1000)/1000;
 }
 
 /**
@@ -185,7 +258,7 @@ function SUTyearsToEarth(sutYears){
  */
 function SUTyearsToEarthReform(sutYears){
   var seconds = sutYears*sutYearSec;
-  return Math.floor(seconds / earthYearReformedSec);
+  return Math.floor((seconds / earthYearReformedSec)*1000)/1000;
 }
 
 /**
@@ -197,23 +270,22 @@ function earthYearsToSUT(earthYear)
   var seconds = earthYear * earthYearReformedSec;
 
   //reconstruct into SUT and return
-  return Math.floor(seconds / sutYearSec);
+  return Math.floor((seconds / sutYearSec)*1000)/1000;
 }
 
 /**
  * Gets an Earth date and converts it to SUT date
  */
 function earthDateToSUT(earthDate){
-  var seconds;
-  var earthYear = moment(earthDate).year() + 1; //moment.js substracts one from the actual year, bug?
+  var seconds, day;
+  var earthYear = moment(earthDate).year() ; //moment.js substracts one from the actual year, bug?
 
   //first check if it is before or after 2400
   if(earthYear <= 2400)
   {
-    //we can use Moment.js to get us the seconds counts
     seconds = (earthYear-2400)*earthYearReformedSec;
-    //add minus, because it is before SUT
-    return "SUT -" + secondsToSUT(seconds);
+    //we can use Moment.js to get us the seconds counts for day
+    day = moment(earthDate).dayOfYear();
   }
   else
   {
@@ -221,30 +293,61 @@ function earthDateToSUT(earthDate){
     //first let's get the seconds for year (don't forget to subtract year 2400)
     seconds = (earthYear-2400)*earthYearReformedSec;
 
-    //figure out if we have more than a year
-
-    /*
     //now let's get the day of the year
-    var day = moment(earthDate).dayOfYear();
-    console.log(day);
+    day = moment(earthDate).dayOfYear();
     //29th February is the 60th day
-    if( !((day > 60 && moment(earthYear).isLeapYear()) || day <= 60))
+    if( !((day > 60 && !moment(earthYear).isLeapYear()) || day <= 60))
     {
       //we have to add one extra day to our calculations to be more accurate
       day++;
     }
-
-    //add second for the days in the the year
-    seconds += day*86400; //24*60*60
-    console.log(seconds);
-    */
-
-    //now we can calculate
-    return "SUT " + secondsToSUT(seconds);
   }
+  //add second for the days in the the year
+  seconds += day*86400; //24*60*60
+
+  return "SUT " + secondsToSUT(seconds);
 }
 
 
 /**
  * Get SUT date and convert it to Earth date
  */
+function sutDateToEY(sutDate){
+  var year, day, seconds;
+
+  //validate we have a number
+  //@todo improve validation
+  if(isNaN(sutDate))
+  {
+    return "Please enter a valid SUT date in this format: YYY.DDD";
+  }
+
+  //validate that the input is correct
+  var input = sutDate.split(".");
+
+  if(input.length !== 2)
+  {
+    //there should be two entries, if there aren't return error
+    return "Please enter a valid SUT date in this format: YYY.DDD";
+  }
+
+  year = input[0];
+  day = input[1];
+
+  //validate input
+  if(day > 500)
+  {
+    return "SUT Year has only 500 days.";
+  }
+
+  //get the seconds for the years
+  seconds = year * sutYearSec;
+  //get the seconds for the days
+  seconds += day * sutDaySec;
+
+  //add year 2400
+  //seconds += 75738240000; //((1800×365)+(600×366))×24×60×60 = year 2400 in seconds
+  var milliseconds = 13569483600000 // 2400 in milliseconds
+  milliseconds = milliseconds + (seconds * 1000);
+  return moment(milliseconds).format('YYYY-MM-DD');
+}

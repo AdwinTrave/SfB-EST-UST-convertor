@@ -13,6 +13,9 @@
 
   <link rel="stylesheet" href="css/foundation.min.css" />
   <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <!-- https://github.com/najlepsiwebdesigner/foundation-datepicker -->
+  <link rel="stylesheet" href="css/foundation-datepicker.css">
   <link rel="stylesheet" href="css/main.css">
 
   <script src="js/vendor/modernizr.js"></script>
@@ -38,7 +41,7 @@
             <a href="#">More about this</a>
             <ul class="dropdown">
               <li><a href="https://github.com/AdwinTrave/SfB-time-convertor">Github</a></li>
-              <li><a href="#">About the universe</a></li>
+              <li><a href="#background">About the universe</a></li>
             </ul>
           </li>
         </ul>
@@ -47,19 +50,13 @@
         <ul class="left">
           <li><a href="#intro">Clocks</a></li>
           <li><a href="#converters">Converters</a></li>
+          <li><a href="#background">Background</a></li>
         </ul>
       </section>
     </nav>
   </div>
 
   <main class="row">
-    <section class="medium-12 columns" id="alerts" tabindex="0" aria-live="assertive" role="dialogalert">
-      <div data-alert class="alert-box warning">
-        This is a work in progress.
-        <a href="#" class="close" tabindex="0" aria-label="Close Alert">&times;</a>
-      </div>
-    </section>
-
     <section class="medium-12 columns" id="intro">
       <h1>Struggle for Balance time clocks convertors</h1>
       <p>
@@ -68,7 +65,7 @@
     </section>
 
     <section class="medium-12 columns" id="current">
-      <h3 class="subheader">Today</h3>
+      <h3>Today</h3>
       <!-- current today's time on planet Earth -->
       <div class="medium-4 columns">
         <ul class="pricing-table">
@@ -84,7 +81,7 @@
       </div>
       <div class="medium-4 columns">
         <ul class="pricing-table">
-          <li class="title">Standard Universal Time countdown</li>
+          <li class="title">Coutdown to Standard Universal Time</li>
           <li class="price" id="sutCountdown"></li>
         </ul>
       </div>
@@ -92,32 +89,27 @@
 
     <section class="medium-12 columns" id="future">
       <!-- time to establishment of UST -->
-      <h3 class="text-center">UST will be established <span id="toUst"></span></h3>
+      <h3 class="text-center">UST will be established <span id="toUst"></span> <i class="fa fa-rocket"></i></h3>
 
       <!-- add 4 centruries to current time -->
-      <h3 class="subheader">Some SUT clocks</h3>
-      <div class="medium-4 columns">
-        <ul class="pricing-table">
-          <li class="title">What here?</li>
-          <li class="price" id="???"></li>
-        </ul>
-      </div>
-      <div class="medium-4 columns">
+      <h3>Some SUT clocks</h3>
+      <div class="medium-6 columns">
         <ul class="pricing-table">
           <li class="title">Curent SUT</li>
           <li class="price" id="curentSUT"></li>
+          <li class="bullet-item">This might be a little bit confusing. In SUT the only denomination for before SUT time is the minus before years, but as you can see this is not a countdown. The only thing that counts down are the years, everything else goes up as it would normally.</li>
         </ul>
       </div>
-      <div class="medium-4 columns">
+      <div class="medium-6 columns">
         <ul class="pricing-table">
-          <li class="title">SUT time past</li>
+          <li class="title">SUT time past since this page was opened</li>
           <li class="price" id="passedSUT"></li>
         </ul>
       </div>
     </section>
 
     <section class="medium-12 columns" id="converters">
-      <h3 class="subheader">Converters</h3>
+      <h3>Converters</h3>
       <form id="eyToSUTY">
         <fieldset>
           <legend>Earth Years to SUT Years</legend>
@@ -125,17 +117,15 @@
             <div class="large-6 columns">
               <div class="row collapse">
                 <div class="small-10 columns">
-                  <input id="eyToSUTYInput" type="number" placeholder="Earth Years" maxlength="8" required>
+                  <input id="eyToSUTYInput" type="number" placeholder="Earth Years" maxlength="8" step="any" min=0 required>
                 </div>
                 <div class="small-2 columns">
-                  <input type="submit" class="button postfix" value="Calculate">
+                  <button type="submit" class="button postfix">Calculate <i class="fa fa-cogs"></i></button>
                 </div>
               </div>
             </div>
             <div class="large-6 columns">
-              <article id="eyToSUTYResult" class="panel">
-
-              </article>
+              <article id="eyToSUTYResult" class="panel"></article>
             </div>
           </div>
         </fieldset>
@@ -148,21 +138,87 @@
             <div class="large-6 columns">
               <div class="row collapse">
                 <div class="small-10 columns">
-                  <input id="sutToEYInput" type="number" placeholder="SUT Years" maxlength="8" required>
+                  <input id="sutToEYInput" type="number" placeholder="SUT Years" step="any" maxlength="8" required>
                 </div>
                 <div class="small-2 columns">
-                  <input type="submit" class="button postfix" value="Calculate">
+                  <button type="submit" class="button postfix">Calculate <i class="fa fa-cogs"></i></button>
                 </div>
               </div>
             </div>
             <div class="large-6 columns">
-              <article id="sutToEYResult" class="panel">
-
-              </article>
+              <article id="sutToEYResult" class="panel"></article>
             </div>
           </div>
         </fieldset>
       </form>
+
+      <form id="eDToSUT">
+        <fieldset>
+          <legend>SUT Years to Earth Years</legend>
+          <div class="row">
+            <div class="large-6 columns">
+              <div class="row collapse">
+                <div class="small-10 columns">
+                  <input id="eDToSUTInput" type="date" placeholder="yyyy-mm-dd" required>
+                </div>
+                <div class="small-2 columns">
+                  <button type="submit" class="button postfix">Calculate <i class="fa fa-cogs"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="large-6 columns">
+              <article id="eDToSUTResult" class="panel"></article>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <form id="sutToED">
+        <fieldset>
+          <legend>SUT Years to Earth Years</legend>
+          <div class="row">
+            <div class="large-6 columns">
+              <div class="row collapse">
+                <div class="small-10 columns">
+                  <input id="sutToEDInput" type="text" placeholder="yyy.ddd" maxlength="8" required>
+                </div>
+                <div class="small-2 columns">
+                  <button type="submit" class="button postfix">Calculate <i class="fa fa-cogs"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="large-6 columns">
+              <article id="sutToEDResult" class="panel"></article>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="medium-12 columns" id="background">
+      <h2>Background</h2>
+      <h3 class="subtitle">About SfB universe</h3>
+      <p class="lead">
+        Stuggle for Balance universe is a fictional universe created by Jan Dvorak IV. and the main events are set in a distant future, when the lost of colony ship Redeemer in SUT 273 set Adwin Trave to look for survivors, but instead he finds himself on a new route that lead him discover dark secrets that powerful Sentients would rather remained hidden. Very soon Adwin finds himself at the center of events that threaten to destroy the balance of the known universe.
+      </p>
+      <p>
+        The story material, at the moment of this writing, is established from SUT -10260 till somewhere around SUT 500, with the main story taking place between SUT 287 and SUT 430. Due to the expansive universe and complexity of the story Jan is currently working on creating a platform that will support the storytelling and experience of the universe, this tool will be part of that platform.
+      </p>
+
+      <h3>About SUT</h3>
+      <p>
+        SUT was established on new years eve of Earth Year 2400 to celebrate a new era in the human development and in the galactic community as well. Also the joining of Earth Confederacy gave enough votes to push the proposal through. It were the Grimnaar and Iyat'ktal who were pro and the Tro'ael and Axxonians who were against it, or to be more precise the Axxonians were indifferent. The Grimnaar and Iyat'ktal wanted order in times as previously it meant that every outpost had its own time and that made time synchronization very difficult. When humans joined in they joined the Grimnaar and Iyat'ktal as they already had similar experiences with their own outposts and colonies. The Tro'ael saw independent times as expressions of identity and the Axxoni were still on old Alliance time from thousands of years ago.
+      </p>
+
+      <h3>About EST (Earth Standard Time)</h3>
+      <p>
+        EST is very similar to how we know it today. The only change, from the Gregorian calendar, occured in 2400 with a calendar reform that made February 29th not a transition year anomaly, but a standard day to be part of the calendar every year. This was to account for the changes in Earths orbit due to previous events that lead to such change.
+      </p>
+
+      <h3>About IST (Imperial Standard Time)</h3>
+      <p>
+        Imperial Standard Time is a time unit that was used by the Grimnaar and begins dating from the establishment of the united empire. Often times Grimnaar still refer to event in "before empire" (BE) and "during empire" (DE).
+      </p>
     </section>
   </main>
 
@@ -173,6 +229,7 @@
     $(document).foundation();
   </script>
   <script src="js/vendor/moment.js"></script>
+  <script src="js/foundation-datepicker.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
