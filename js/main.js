@@ -103,7 +103,7 @@ function curentSUT(){
 
   //@todo extrapolate into new funtion that should be able to deal with both pre and SUT times, not just pre-SUT
   //years will go the same way as with countdown, but the clock needs to go forward
-  var secondsNew, minutes, hours, days, years, dayBegin, hoursDown, minutesDown;
+  var secondsNew, minutes, hours, days, daysDown, years, dayBegin, hoursDown, minutesDown;
   years = Math.floor(seconds / sutYearSec);
   daysDown = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
   //find out at what second has the day begun when day has begun
@@ -118,10 +118,10 @@ function curentSUT(){
 
   //add default zeros
   years = defaultZeros(years, 2, true);
-  days = defaultZeros(days, 2);
-  hours = defaultZeros(hours, 1);
-  minutes = defaultZeros(minutes, 1);
-  secondsNew = defaultZeros(secondsNew, 1);
+  days = defaultZeros(days, 2, false);
+  hours = defaultZeros(hours, 1, false);
+  minutes = defaultZeros(minutes, 1, false);
+  secondsNew = defaultZeros(secondsNew, 1, false);
 
   if(seconds < 120000000000) //means we are before SUT
   {
@@ -146,10 +146,10 @@ function secondsToSUT(seconds){
 
   //add default zeros
   years = defaultZeros(years, 2, true);
-  days = defaultZeros(days, 2);
-  hours = defaultZeros(hours, 1);
-  minutes = defaultZeros(minutes, 1);
-  secondsNew = defaultZeros(secondsNew, 1);
+  days = defaultZeros(days, 2, false);
+  hours = defaultZeros(hours, 1, false);
+  minutes = defaultZeros(minutes, 1, false);
+  secondsNew = defaultZeros(secondsNew, 1, false);
 
   //sum
   return years + "." + days + " " + hours + ":" + minutes + ":" + secondsNew;
@@ -158,9 +158,14 @@ function secondsToSUT(seconds){
 /**
  * Account for default zeros in the given fields
  */
-function defaultZeros(number, defaultExtraZeroes, minusBack = false){
+function defaultZeros(number, defaultExtraZeroes, minusBack){
 
   number = number.toString();
+
+  if(minusBack === null)
+  {
+    minusBack = false;
+  }
 
   switch(defaultExtraZeroes)
   {
@@ -242,23 +247,13 @@ function defaultZeros(number, defaultExtraZeroes, minusBack = false){
 }
 
 /**
- * Takes in SUT years and figures out Earth years before calendar reform of 2400
+ * Takes in SUT years and figures out Earth years based on years after calendar reform of 2400
  */
 function SUTyearsToEarth(sutYears){
   //first get down to seconds
   var seconds = sutYears*sutYearSec;
 
-  //@todo
-  //we need to calculate ourselves the number of years as Moment.js is no use here
   return Math.round((seconds / earthYearReformedSec)*1000)/1000;
-}
-
-/**
- * Takes in SUT years and figures out the Earth years count after the calendar reform of 2400
- */
-function SUTyearsToEarthReform(sutYears){
-  var seconds = sutYears*sutYearSec;
-  return Math.floor((seconds / earthYearReformedSec)*1000)/1000;
 }
 
 /**
@@ -346,8 +341,7 @@ function sutDateToEY(sutDate){
   seconds += day * sutDaySec;
 
   //add year 2400
-  //seconds += 75738240000; //((1800×365)+(600×366))×24×60×60 = year 2400 in seconds
-  var milliseconds = 13569483600000 // 2400 in milliseconds
+  var milliseconds = 13569483600000; // 2400 in milliseconds
   milliseconds = milliseconds + (seconds * 1000);
   return moment(milliseconds).format('YYYY-MM-DD');
 }
