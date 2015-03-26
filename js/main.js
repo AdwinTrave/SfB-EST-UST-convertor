@@ -162,11 +162,6 @@ function defaultZeros(number, defaultExtraZeroes, minusBack){
 
   number = number.toString();
 
-  if(minusBack === null)
-  {
-    minusBack = false;
-  }
-
   switch(defaultExtraZeroes)
   {
     case 0: /* no need to do anything */ break;
