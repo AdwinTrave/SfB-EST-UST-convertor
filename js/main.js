@@ -110,11 +110,31 @@ function curentSUT(){
   dayBegin = (years * sutYearSec)+(daysDown * sutDaySec);
   //find the current time by determining how much time is left in the day
   days = 500 - daysDown;
-  hoursDown = Math.floor( (seconds - ((years * sutYearSec)+(daysDown * sutDaySec))) / sutHourSec );
+  if(days == 500)
+  {
+    days = "000";
+    years++;
+  }
+  hoursDown = Math.floor( (seconds - ((years * sutYearSec) + (daysDown * sutDaySec))) / sutHourSec );
   hours = 10 - hoursDown;
-  minutesDown = Math.floor( (seconds - ((years * sutYearSec)+(daysDown * sutDaySec)+(hoursDown*sutHourSec))) / sutMinuteSec );
+  if(hours == 10)
+  {
+    hours = "00";
+    days++;
+  }
+  minutesDown = Math.floor( (seconds - ((years * sutYearSec) + (daysDown * sutDaySec) + (hoursDown*sutHourSec))) / sutMinuteSec );
   minutes = 100 - minutesDown;
-  secondsNew = 100 - (seconds -( (years * sutYearSec)+(daysDown * sutDaySec)+(hoursDown*sutHourSec)+(minutesDown*sutMinuteSec)));
+  if(minutes == 100)
+  {
+    minutes = "00";
+    hours++;
+  }
+  secondsNew = 100 - (seconds -( (years * sutYearSec)+(daysDown * sutDaySec) + (hoursDown*sutHourSec) +  (minutesDown*sutMinuteSec)));
+  if(secondsNew == 100)
+  {
+    secondsNew = 0;
+    minutes++;
+  }
 
   //add default zeros
   years = defaultZeros(years, 2, true);
