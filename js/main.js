@@ -14,7 +14,7 @@ $(function(){
   moment().format();
 
   //time to sut start
-  $("#toUst").text(moment(sutStart).fromNow());
+  $("#toSut").text(moment(sutStart).fromNow());
 
   //today at GMT
   todayGMT();
