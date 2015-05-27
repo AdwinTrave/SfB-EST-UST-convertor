@@ -1,29 +1,29 @@
-QUnit.test( "secondsToSUT", function( assert ) {
-  assert.deepEqual(secondsToSUT(10), "000.000 00:00:10");
-  assert.deepEqual(secondsToSUT(100), "000.000 00:01:00");
-  assert.deepEqual(secondsToSUT(10000), "000.000 01:00:00");
-  assert.deepEqual(secondsToSUT(100000), "000.001 00:00:00");
-  assert.deepEqual(secondsToSUT(50000000), "001.000 00:00:00");
-  assert.deepEqual(secondsToSUT(100000000), "002.000 00:00:00");
-  assert.deepEqual(secondsToSUT(550000000), "011.000 00:00:00");
-  assert.deepEqual(secondsToSUT(10550000000), "211.000 00:00:00");
+QUnit.test( "toTime", function( assert ) {
+  assert.deepEqual(toTime(10000), "SUT 000.000 00:00:10");
+  assert.deepEqual(toTime(100000), "SUT 000.000 00:01:00");
+  assert.deepEqual(toTime(10000000), "SUT 000.000 01:00:00");
+  assert.deepEqual(toTime(100000000), "SUT 000.001 00:00:00");
+  assert.deepEqual(toTime(50000000000), "SUT 001.000 00:00:00");
+  assert.deepEqual(toTime(100000000000), "SUT 002.000 00:00:00");
+  assert.deepEqual(toTime(550000000000), "SUT 011.000 00:00:00");
+  assert.deepEqual(toTime(10550000000000), "SUT 211.000 00:00:00");
 });
 QUnit.test("defaultZeroes", function ( assert ){
-  assert.deepEqual(defaultZeros(1, 0, false), "1");
-  assert.deepEqual(defaultZeros(2, 1, false), "02");
-  assert.deepEqual(defaultZeros(10, 1, false), "10");
-  assert.deepEqual(defaultZeros(1, 2, true), "001");
-  assert.deepEqual(defaultZeros(40, 2, false), "040");
-  assert.deepEqual(defaultZeros(500, 2, true), "500");
+  assert.deepEqual(defaultZeros(1, 1), "1");
+  assert.deepEqual(defaultZeros(2, 2), "02");
+  assert.deepEqual(defaultZeros(10, 2), "10");
+  assert.deepEqual(defaultZeros(1, 3, "001");
+  assert.deepEqual(defaultZeros(40, 3), "040");
+  assert.deepEqual(defaultZeros(500, 3), "500");
   //handling negative values
-  assert.deepEqual(defaultZeros(-242, 2, true), "-242");
-  assert.deepEqual(defaultZeros(-45, 2, true), "-045");
-  assert.deepEqual(defaultZeros(-4, 2, true), "-004");
-  assert.deepEqual(defaultZeros(-45, 2, false), "045");
-  assert.deepEqual(defaultZeros(-4, 2, false), "004");
-  assert.deepEqual(defaultZeros(-42, 1, false), "-42");
-  assert.deepEqual(defaultZeros(-2, 1, true), "-02");
-  assert.deepEqual(defaultZeros(-2, 0, false), "-2");
+  assert.deepEqual(defaultZeros(-242, 3), "242");
+  assert.deepEqual(defaultZeros(-45, 3), "045");
+  assert.deepEqual(defaultZeros(-4, 3), "004");
+  assert.deepEqual(defaultZeros(-45, 3), "045");
+  assert.deepEqual(defaultZeros(-4, 3), "004");
+  assert.deepEqual(defaultZeros(-42, 2), "42");
+  assert.deepEqual(defaultZeros(-2, 1), "2");
+  assert.deepEqual(defaultZeros(-2, 0), "2");
 });
 QUnit.test("SUTyearsToEarth", function ( assert ){
   assert.equal(SUTyearsToEarth(15.811), 25);

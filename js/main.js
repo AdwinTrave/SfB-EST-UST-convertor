@@ -8,22 +8,13 @@
  * Standard unit is milisecond from which all calculations are going to be made
  */
 var unit1 = 1000; //how many miliseconds does the unit have
-var unit1name = "second"; //the name of the unit
-
 var unit2 = unit1 * 100;
-var unit2name = "Standard minute";
-
 var unit3 = unit2 * 100;
-var unit3name = "Standard hour";
-
 var unit4 = unit3 * 10;
-var unit4name = "Standard day";
-
 var unit5 = unit4 * 500;
-var unit5name = "Standard year";
 
 var unitArray = [unit5, unit4, unit3, unit2, unit1]; //must be in order from the largest to smallest
-var unitLength = [3, 3, 2, 2, 2] //default length of each unit space, ie. 001 - 3, 100 - 3, 59 - 2, maximum is 3 right now
+var unitLength = [3, 3, 2, 2, 2]; //default length of each unit space, ie. 001 - 3, 100 - 3, 59 - 2, maximum is 3 right now
 var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
@@ -131,7 +122,7 @@ function curentSUT(){
  */
 function toTime(miliseconds)
 {
-  var output = new Array();
+  var output = [];
 
   for (var i = 0; i < unitArray.length; i++) {
     //first figure out if we are before of after the beginning of the time
@@ -187,7 +178,7 @@ function toTime(miliseconds)
 /**
  * Account for default zeros in the given fields
  */
-function defaultZeros(number, defaultExtraZeroes, minusBack){
+function defaultZeros(number, defaultExtraZeroes){
 
   number = number.toString();
 
@@ -208,12 +199,6 @@ function defaultZeros(number, defaultExtraZeroes, minusBack){
           if(number.length === 1)
           {
             number = "0" + number;
-          }
-
-          //add the minus sign back if this is a year or minus back is requested
-          if(minusBack)
-          {
-            number = "-" + number;
           }
         }
       }
@@ -243,12 +228,6 @@ function defaultZeros(number, defaultExtraZeroes, minusBack){
           if(number.length === 2)
           {
             number = "0" + number;
-          }
-
-          //add the minus sign back if this is a year or minus back is requested
-          if(minusBack)
-          {
-            number = "-" + number;
           }
         }
       }
