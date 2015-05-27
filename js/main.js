@@ -1,7 +1,35 @@
-//basic values
-var sutStart = moment("2400-01-01");
-var secondsOnPage = 0;
+/**
+ * Struggle for Balance time conventor
+ * @author Jan Dvorak IV.
+ */
 
+/*
+ * Settings
+ * Standard unit is milisecond from which all calculations are going to be made
+ */
+var unit1 = 1000; //how many miliseconds does the unit have
+var unit1name = "second"; //the name of the unit
+
+var unit2 = unit1 * 100;
+var unit2name = "Standard minute";
+
+var unit3 = unit2 * 100;
+var unit3name = "Standard hour";
+
+var unit4 = unit3 * 10;
+var unit4name = "Standard day";
+
+var unit5 = unit4 * 500;
+var unit5name = "Standard year";
+
+var unitArray = [unit5, unit4, unit3, unit2, unit1]; //must be in order from the largest to smallest
+var unitLength = [3, 3, 2, 2, 2] //default length of each unit space, ie. 001 - 3, 100 - 3, 59 - 2, maximum is 3 right now
+var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
+var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
+
+var timeBegins = moment("2400-01-01"); //the moment when time begins in relation to Earth time
+
+//old variables
 var sutMinuteSec = 100;
 var sutHourSec = sutMinuteSec * 100;
 var sutDaySec = sutHourSec * 10;
@@ -10,18 +38,15 @@ var sutYearSec = sutDaySec * 500;
 var earthYearReformedSec = 31622400;
 
 $(function(){
-  //basic selectors
-  moment().format();
-
   //time to sut start
-  $("#toSut").text(moment(sutStart).fromNow());
+  $("#toSut").text(timeBegins.fromNow());
 
   //today at GMT
   todayGMT();
   //today at local time
   todayLocal();
   //countdown to SUT in SUT
-  sutCountdown();
+  countdownToBegin();
   //passed SUT
   passedSUT();
   //curent date and time
@@ -74,23 +99,22 @@ function todayLocal(){
 /**
  * Calculates current SUT time for the local time
  */
-function sutCountdown(){
+function countdownToBegin(){
   //first determine time to SUT beginning
-  var toSUT = sutStart.diff(moment(), 'seconds');
-  //convert the seconds to SUT date
-  var SUTDate = secondsToSUT(toSUT);
-  //add minus and display
-  $("#sutCountdown").text("SUT -" + SUTDate);
+  var toStart = timeBegins.diff(moment());
+  //convert the miliseconds to SUT date
+  $("#countdownToBegin").text(toTime(toStart));
 
-  setTimeout(sutCountdown, 1000);
+  setTimeout(countdownToBegin, 1000);
 }
 
 /**
  * A clock that counts how much time has passed since user opened the webpage
  */
+var timeOnPage = 0;
 function passedSUT(){
-  secondsOnPage++;
-  $("#passedSUT").text("SUT " + secondsToSUT(secondsOnPage));
+  timeOnPage += 1000;
+  $("#passedSUT").text(toTime(timeOnPage));
   setTimeout(passedSUT, 1000);
 }
 
@@ -98,81 +122,66 @@ function passedSUT(){
  * Current SUT time
  */
 function curentSUT(){
-  //get the number of seconds to SUT
-  var seconds = sutStart.diff(moment(), 'seconds');
-
-  //@todo extrapolate into new funtion that should be able to deal with both pre and SUT times, not just pre-SUT
-  //years will go the same way as with countdown, but the clock needs to go forward
-  var secondsNew, minutes, hours, days, daysDown, years, dayBegin, hoursDown, minutesDown;
-  years = Math.floor(seconds / sutYearSec);
-  daysDown = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
-  //find out at what second has the day begun when day has begun
-  dayBegin = (years * sutYearSec)+(daysDown * sutDaySec);
-  //find the current time by determining how much time is left in the day
-  days = 500 - daysDown;
-  if(days == 500)
-  {
-    days = "000";
-    years++;
-  }
-  hoursDown = Math.floor( (seconds - ((years * sutYearSec) + (daysDown * sutDaySec))) / sutHourSec );
-  hours = 10 - hoursDown;
-  if(hours == 10)
-  {
-    hours = "00";
-    days++;
-  }
-  minutesDown = Math.floor( (seconds - ((years * sutYearSec) + (daysDown * sutDaySec) + (hoursDown*sutHourSec))) / sutMinuteSec );
-  minutes = 100 - minutesDown;
-  if(minutes == 100)
-  {
-    minutes = "00";
-    hours++;
-  }
-  secondsNew = 100 - (seconds -( (years * sutYearSec)+(daysDown * sutDaySec) + (hoursDown*sutHourSec) +  (minutesDown*sutMinuteSec)));
-  if(secondsNew == 100)
-  {
-    secondsNew = 0;
-    minutes++;
-  }
-
-  //add default zeros
-  years = defaultZeros(years, 2, true);
-  days = defaultZeros(days, 2, false);
-  hours = defaultZeros(hours, 1, false);
-  minutes = defaultZeros(minutes, 1, false);
-  secondsNew = defaultZeros(secondsNew, 1, false);
-
-  if(seconds < 120000000000) //means we are before SUT
-  {
-    years = "-"+years;
-  }
-  $("#curentSUT").text("SUT " + years + "." + days + " " + hours + ":" + minutes + ":" + secondsNew);
+  $("#curentSUT").text(toTime(moment()));
   setTimeout(curentSUT, 1000);
 }
 
 /**
- * Calculates the SUT time from input of seconds and returns in a formated string
+ * Calculates the time from miliseconds
  */
-function secondsToSUT(seconds){
-  //parts
-  var secondsNew, minutes, hours, days, years;
+function toTime(miliseconds)
+{
+  var output = new Array();
 
-  years = Math.floor(seconds / sutYearSec);
-  days = Math.floor( (seconds - (years * sutYearSec)) / sutDaySec );
-  hours = Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec))) / sutHourSec );
-  minutes = Math.floor( (seconds - ((years * sutYearSec)+(days * sutDaySec)+(hours*sutHourSec))) / sutMinuteSec );
-  secondsNew = seconds - ( (years * sutYearSec)+(days * sutDaySec)+(hours*sutHourSec)+(minutes*sutMinuteSec) );
+  for (var i = 0; i < unitArray.length; i++) {
+    //first figure out if we are before of after the beginning of the time
+    var minus = false;
 
-  //add default zeros
-  years = defaultZeros(years, 2, true);
-  days = defaultZeros(days, 2, false);
-  hours = defaultZeros(hours, 1, false);
-  minutes = defaultZeros(minutes, 1, false);
-  secondsNew = defaultZeros(secondsNew, 1, false);
+    //only add minus at the first number
+    if(i === 0)
+    {
+      if(miliseconds < timeBegins.valueOf())
+      {
+        minus = true;
+      }
+    }
+    //calculate how much of the given unit is there in the time
+    output[i] = Math.floor( Math.abs(miliseconds / unitArray[i]) );
 
-  //sum
-  return years + "." + days + " " + hours + ":" + minutes + ":" + secondsNew;
+    //reduce the time by the unit calculated
+    miliseconds = miliseconds - (output[i] * unitArray[i]);
+
+    //add the appropriate number of zeroes
+    output[i] = defaultZeros(output[i], unitLength[i], minus);
+  }
+
+  //return the string to display the time
+  var outputString;
+  for (var i = 0; i < output.length; i++) {
+    var k = i+1;
+
+    //unit declaration before time
+    if(i === 0)
+    {
+      if(unitDeclaration === "before" || unitDeclaration === "both")
+      {
+        outputString = unitSeparator[i];
+      }
+    }
+
+    outputString += output[i] + unitSeparator[k];
+
+    //unit declaration after time
+    if(i === output.length)
+    {
+      if(unitDeclaration === "after" || unitDeclaration === "both")
+      {
+        outputString += unitSeparator[k+1];
+      }
+    }
+
+  }
+  return outputString;
 }
 
 /**
@@ -184,8 +193,8 @@ function defaultZeros(number, defaultExtraZeroes, minusBack){
 
   switch(defaultExtraZeroes)
   {
-    case 0: /* no need to do anything */ break;
-    case 1:
+    case 1: /* no need to do anything */ break;
+    case 2:
       if(number < 0)
       {
         //we have a negative value
@@ -216,7 +225,7 @@ function defaultZeros(number, defaultExtraZeroes, minusBack){
         }
       }
       break;
-    case 2:
+    case 3:
       if(number < 0)
       {
         //we have a negative value
@@ -288,7 +297,7 @@ function earthYearsToSUT(earthYear)
  */
 function earthDateToSUT(earthDate){
   var seconds, day;
-  var earthYear = moment(earthDate).year() ; //moment.js substracts one from the actual year, bug?
+  var earthYear = moment(earthDate).year()-1 ; //moment.js substracts one from the actual year, bug?
 
   //first check if it is before or after 2400
   if(earthYear <= 2400)
@@ -315,7 +324,7 @@ function earthDateToSUT(earthDate){
   //add second for the days in the the year
   seconds += day*86400; //24*60*60
 
-  return "SUT " + secondsToSUT(seconds);
+  return toTime(seconds*1000);
 }
 
 

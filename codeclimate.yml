@@ -1,0 +1,15 @@
+# Save as .codeclimate.yml (note leading .) in project root directory
+languages:
+  JavaScript: true
+exclude_paths:
+- "js/foundation/*"
+- "js/vendor/*"
+- "js/foundation.min.js"
+- "js/foundation-datepicker.js"
+- "img/*"
+- "css/foundation.min.css"
+- "css/normalize.min.css"
+- "css/qunit*.css"
+- "humans.txt"
+- "*.png"
+- "*.xml"
