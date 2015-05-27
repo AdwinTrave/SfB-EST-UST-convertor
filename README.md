@@ -28,11 +28,11 @@ Imperial Standard Time is a time unit that was used by the Grimnaar and begins d
 The plans are to improve the converter with few more features described in the issues and hopefully later add more times like the mentioned IST.
 
 ## Included open source
-* normalize v3.0.2
-* Zurb Foundation v5.5.1
-* jQuery v2.1.3
-* QUnit v1.17.1
-* Moment.js v2.9.0
+* normalize v3.0.3
+* Zurb Foundation v5.5.2
+* jQuery v2.1.4
+* QUnit v1.18.0
+* Moment.js v2.10.3
 * Foundation datepicker v1.4 (https://github.com/najlepsiwebdesigner/foundation-datepicker)
 * Font Awesome v4.3.0
 
