@@ -21,7 +21,7 @@ var unitDeclaration = "before"; //options: before, after, both, false - addition
 var timeBegins = moment("2400-01-01"); //the moment when time begins in relation to Earth time
 
 //create the object
-var sut = new fictionalTime(unitArray, unitLength, timeBegins, unitSeparator, unitDeclaration);
+var sut = new fictionalTime(unitArray, unitLength, timeBegins.valueOf(), unitSeparator, unitDeclaration);
 
 //old variables
 var sutMinuteSec = 100;
@@ -116,7 +116,7 @@ function passedSUT(){
  * Current SUT time
  */
 function curentSUT(){
-  $("#curentSUT").text(sut.toTime(moment())); // <= here is the issue
+  $("#curentSUT").text(sut.currentTime);
   setTimeout(curentSUT, 1000);
 }
 
