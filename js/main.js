@@ -20,6 +20,9 @@ var unitDeclaration = "before"; //options: before, after, both, false - addition
 
 var timeBegins = moment("2400-01-01"); //the moment when time begins in relation to Earth time
 
+//create the object
+var sut = new fictionalTime(unitArray, unitLength, timeBegins, unitSeparator, unitDeclaration);
+
 //old variables
 var sutMinuteSec = 100;
 var sutHourSec = sutMinuteSec * 100;
@@ -94,7 +97,7 @@ function countdownToBegin(){
   //first determine time to SUT beginning
   var toStart = timeBegins.diff(moment());
   //convert the miliseconds to SUT date
-  $("#countdownToBegin").text(toTime(toStart));
+  $("#countdownToBegin").text(sut.toTime(toStart));
 
   setTimeout(countdownToBegin, 1000);
 }
@@ -105,7 +108,7 @@ function countdownToBegin(){
 var timeOnPage = 0;
 function passedSUT(){
   timeOnPage += 1000;
-  $("#passedSUT").text(toTime(timeOnPage));
+  $("#passedSUT").text(sut.toTime(timeOnPage));
   setTimeout(passedSUT, 1000);
 }
 
@@ -113,140 +116,8 @@ function passedSUT(){
  * Current SUT time
  */
 function curentSUT(){
-  $("#curentSUT").text(toTime(moment()));
+  $("#curentSUT").text(sut.toTime(moment())); // <= here is the issue
   setTimeout(curentSUT, 1000);
-}
-
-/**
- * Calculates the time from miliseconds
- */
-function toTime(miliseconds)
-{
-  var output = [];
-
-  for (var i = 0; i < unitArray.length; i++) {
-    //first figure out if we are before of after the beginning of the time
-    var minus = false;
-
-    //only add minus at the first number
-    if(i === 0)
-    {
-      if(miliseconds < timeBegins.valueOf())
-      {
-        minus = true;
-      }
-    }
-    //calculate how much of the given unit is there in the time
-    output[i] = Math.floor( Math.abs(miliseconds / unitArray[i]) );
-
-    //reduce the time by the unit calculated
-    miliseconds = miliseconds - (output[i] * unitArray[i]);
-
-    //add the appropriate number of zeroes
-    output[i] = defaultZeros(output[i], unitLength[i], minus);
-  }
-
-  //return the string to display the time
-  var outputString;
-  for (var i = 0; i < output.length; i++) {
-    var k = i+1;
-
-    //unit declaration before time
-    if(i === 0)
-    {
-      if(unitDeclaration === "before" || unitDeclaration === "both")
-      {
-        outputString = unitSeparator[i];
-      }
-    }
-
-    outputString += output[i] + unitSeparator[k];
-
-    //unit declaration after time
-    if(i === output.length)
-    {
-      if(unitDeclaration === "after" || unitDeclaration === "both")
-      {
-        outputString += unitSeparator[k+1];
-      }
-    }
-
-  }
-  return outputString;
-}
-
-/**
- * Account for default zeros in the given fields
- */
-function defaultZeros(number, defaultExtraZeroes){
-
-  number = number.toString();
-
-  switch(defaultExtraZeroes)
-  {
-    case 1: /* no need to do anything */ break;
-    case 2:
-      if(number < 0)
-      {
-        //we have a negative value
-        //determine if any changes are needed
-        if(number.length !== 3)
-        {
-          //remove the minus sign
-          number = number.substring(1);
-
-          //determine how many zeroes will have to be added
-          if(number.length === 1)
-          {
-            number = "0" + number;
-          }
-        }
-      }
-      else
-      {
-        if(number < 10)
-        {
-          return "0"+number;
-        }
-      }
-      break;
-    case 3:
-      if(number < 0)
-      {
-        //we have a negative value
-        //determine if any changes are needed
-        if(number.length !== 4)
-        {
-          //remove the minus sign
-          number = number.substring(1);
-
-          //determine how many zeroes will have to be added
-          if(number.length === 1)
-          {
-            number = "00" + number;
-          }
-          if(number.length === 2)
-          {
-            number = "0" + number;
-          }
-        }
-      }
-      else
-      {
-        if(number < 10)
-        {
-          return "00"+number;
-        }
-        if(number < 100)
-        {
-          return "0"+number;
-        }
-      }
-      break;
-      default: break;
-  }
-
-  return number;
 }
 
 /**
@@ -303,7 +174,7 @@ function earthDateToSUT(earthDate){
   //add second for the days in the the year
   seconds += day*86400; //24*60*60
 
-  return toTime(seconds*1000);
+  return sut.toTime(seconds*1000);
 }
 
 
