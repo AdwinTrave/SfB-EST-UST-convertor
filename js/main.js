@@ -18,7 +18,7 @@ var unitLength = [3, 3, 2, 2, 2]; //default length of each unit space, ie. 001 -
 var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
-var timeBegins = moment("2400-01-01"); //the moment when time begins in relation to Earth time
+var timeBegins = moment("2400-01-01 00:00"); //the moment when time begins in relation to Earth time
 
 //create the object
 var sut = new fictionalTime(unitArray, unitLength, timeBegins.valueOf(), unitSeparator, unitDeclaration);
@@ -29,7 +29,7 @@ var sutHourSec = sutMinuteSec * 100;
 var sutDaySec = sutHourSec * 10;
 var sutYearSec = sutDaySec * 500;
 
-var earthYearReformedSec = 31622400;
+var earthYearReformed = 31622400000;
 
 $(function(){
   //time to sut start
@@ -94,10 +94,7 @@ function todayLocal(){
  * Calculates current SUT time for the local time
  */
 function countdownToBegin(){
-  //first determine time to SUT beginning
-  var toStart = timeBegins.diff(moment());
-  //convert the miliseconds to SUT date
-  $("#countdownToBegin").text(sut.toTime(toStart));
+  $("#countdownToBegin").text(sut.toDate(Date.now()));
 
   setTimeout(countdownToBegin, 1000);
 }
@@ -124,10 +121,10 @@ function curentSUT(){
  * Takes in SUT years and figures out Earth years based on years after calendar reform of 2400
  */
 function SUTyearsToEarth(sutYears){
-  //first get down to seconds
-  var seconds = sutYears*sutYearSec;
+  //first get down to milliseconds
+  var milliseconds = sut.unitToMilliseconds(sutYears, 0);
 
-  return Math.round((seconds / earthYearReformedSec)*1000)/1000;
+  return milliseconds / earthYearReformed;
 }
 
 /**
@@ -135,46 +132,18 @@ function SUTyearsToEarth(sutYears){
  */
 function earthYearsToSUT(earthYear)
 {
-  //break it down to seconds
-  var seconds = earthYear * earthYearReformedSec;
+  //break it down to milliseconds
+  var milliseconds = earthYear * earthYearReformed;
 
   //reconstruct into SUT and return
-  return Math.floor((seconds / sutYearSec)*1000)/1000;
+  return sut.toFictionalUnit(milliseconds, 0);
 }
 
 /**
  * Gets an Earth date and converts it to SUT date
  */
 function earthDateToSUT(earthDate){
-  var seconds, day;
-  var earthYear = moment(earthDate).year()-1 ; //moment.js substracts one from the actual year, bug?
-
-  //first check if it is before or after 2400
-  if(earthYear <= 2400)
-  {
-    seconds = (earthYear-2400)*earthYearReformedSec;
-    //we can use Moment.js to get us the seconds counts for day
-    day = moment(earthDate).dayOfYear();
-  }
-  else
-  {
-    //we have to count ourselves due to the calendar reform of 2400
-    //first let's get the seconds for year (don't forget to subtract year 2400)
-    seconds = (earthYear-2400)*earthYearReformedSec;
-
-    //now let's get the day of the year
-    day = moment(earthDate).dayOfYear();
-    //29th February is the 60th day
-    if( !((day > 60 && !moment(earthYear).isLeapYear()) || day <= 60))
-    {
-      //we have to add one extra day to our calculations to be more accurate
-      day++;
-    }
-  }
-  //add second for the days in the the year
-  seconds += day*86400; //24*60*60
-
-  return sut.toTime(seconds*1000);
+  return sut.toTime(moment(earthDate).valueOf());
 }
 
 
@@ -182,7 +151,6 @@ function earthDateToSUT(earthDate){
  * Get SUT date and convert it to Earth date
  */
 function sutDateToEY(sutDate){
-  var year, day, seconds;
 
   //validate we have a number
   //@todo improve validation
@@ -200,22 +168,21 @@ function sutDateToEY(sutDate){
     return "Please enter a valid SUT date in this format: YYY.DDD";
   }
 
-  year = input[0];
-  day = input[1];
+  var year = input[0];
+  var day = input[1];
 
   //validate input
   if(day > 500)
   {
-    return "SUT Year has only 500 days.";
+    return "SUT Year has only 500 days. Which means you should enter days between 000 to 499";
   }
 
   //get the seconds for the years
-  seconds = year * sutYearSec;
+  var milliseconds = sut.unitToMilliseconds(year, 0);
   //get the seconds for the days
-  seconds += day * sutDaySec;
+  milliseconds += sut.unitToMilliseconds(day, 1);
 
   //add year 2400
-  var milliseconds = 13569483600000; // 2400 in milliseconds
-  milliseconds = milliseconds + (seconds * 1000);
+  milliseconds = timeBegins.valueOf() + milliseconds;
   return moment(milliseconds).format('YYYY-MM-DD');
 }

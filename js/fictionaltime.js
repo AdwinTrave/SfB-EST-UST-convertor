@@ -4,8 +4,8 @@
  * from provided milliseconds.
  * @author Jan Dvorak IV.
  * @copyright All rights reserved
- * @version 1.1
- * @since 1.1
+ * @version 2.0
+ * @since 2.0
  * @todo right now this class can only handle simetric times, will need to improve to handle more diverse times (test on Mayan calendar, then Augustine calendar - the main issue is the length of months)
  */
 
@@ -13,7 +13,7 @@
  * The main object
  * @param {array} units Array of units lengths (int)
  * @param {array} unitsSpace how many spaces does the unit take (int)
- * @param {Moment.js object} beginning The Earth Day the time beginnins - can be null
+ * @param {int} beginning The Earth Day the time beginnins in milliseconds - @todo make optional - ie. can be null
  * @param {array} separators Separations between the units
  * @param {string} declaration Where should be the time declaration displayed - before, after, both, false
  */
@@ -38,33 +38,24 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
    */
   this.toTime = function(milliseconds)
   {
-    var output = [];
+    var output = calculate(milliseconds, false);
 
-    //first figure out if we are before of after the beginning of the time
-    var before = false;
-    if(milliseconds < beginning)
-    {
-      before = true;
-    }
+    //return the string to display the time
+    return format(output);
+  }
 
-    for (var i = 0; i < units.length; i++) {
-
-      //add minus at the beginning if before time beginning
-      var minus = false;
-      if(i === 0 && before)
-      {
-        minus = true
-      }
-
-      //calculate how much of the given unit is there in the time
-      output[i] = Math.floor( Math.abs(milliseconds / units[i]) );
-
-      //reduce the time by the unit calculated
-      milliseconds = milliseconds - (output[i] * units[i]);
-
-      //add the appropriate number of zeroes
-      output[i] = defaultZeros(output[i], unitLength[i], minus);
-    }
+  /**
+   * Calculates the time from milliseconds and takes into account if the time
+   * is before the beginning of the fictional time or not.
+   * @function toDate
+   * @since 2.0
+   * @param {int} milliseconds milliseconds that should be translated into the fictional time.
+   * @return {string} Formated time display
+   * @todo Add param to determine if to display declaration or not or only at one place (ie. before, after)
+   */
+  this.toDate = function(milliseconds)
+  {
+    var output = calculate(milliseconds, true);
 
     //return the string to display the time
     return format(output);
@@ -73,56 +64,186 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
   /**
    * Current time
    * @function current
-   * @since 1.1
+   * @since 2.0
    * @return {string} Formated current time in the fictional time
    */
   this.currentTime = function()
   {
     //first get current time in milliseconds
     var now = Date.now();
+    var output = calculate(now, true);
 
-    //evaluate for minus
-    if(now < beginning)
+    return format(output);
+  }
+
+  /**
+   * Calculates the fictional time
+   * @function calculate
+   * @since 2.0
+   * @param {int} milliseconds The time to be calculated
+   * @param {boolean} preTime Should the time be evaluated if it is before the establishment of the time?
+   * @return {array} Array with the results to be used for the format function
+   */
+  function calculate(milliseconds, preTime)
+  {
+    var output = [];
+
+    //evaluate preTime
+    var beforeTime = false;
+    if(preTime)
     {
-      var output = [];
-      for (var i = 0; i < units.length; i++)
+      if(beginning > milliseconds)
       {
-        /**
-         * Assuming that the biggest unit is equivalent to years it should be counting down.
-         * Other units should be going up as normal clocks.
-         */
-        if(i === 0)
+        beforeTime = true;
+        //for time before establishment make it a countdown
+        milliseconds = beginning - milliseconds;
+      }
+      else
+      {
+        //for a date after the establishment time remove the time to the establishment time for correct calculations
+        milliseconds = milliseconds - beginning;
+      }
+    }
+
+    for (var i = 0; i < units.length; i++)
+    {
+      /**
+       * Assuming that the biggest unit is equivalent to years it should be counting down.
+       * Other units should be going up as normal clocks.
+       */
+      if(i === 0 || !beforeTime)
+      {
+        //calculate how much of the given unit is there in the time
+        output[i] = Math.floor( Math.abs(milliseconds / units[i]) );
+
+        //reduce the time by the unit calculated
+        milliseconds = milliseconds - (output[i] * units[i]);
+      }
+      else
+      {
+        //first calculate how many units are there
+        var count = Math.floor( Math.abs( milliseconds / units[i]) );
+
+        //now calculate what is the maximum of the given unit
+        var max = units[i-1] / units[i];
+
+        //now get the correct number that is going to be increasing
+        output[i] = max-count;
+        //account for getting the max number displayed
+        if(count === 0)
         {
-          //calculate how much of the given unit is there in the time
-          output[i] = Math.floor( Math.abs(now / units[i]) );
-
-          //reduce the time by the unit calculated
-          now = now - (output[i] * units[i]);
-
-          //add the appropriate number of zeroes
-          output[i] = defaultZeros(output[i], unitLength[i], true);
+          output[i] = 0;
         }
-        else
-        {
-          var count = Math.floor( Math.abs( now / units[i]) );
-          output[i] = Math.floor( Math.abs( (units[i] - now) / units[i] ) );
 
-          //reduce the time by the unit calculated
-          now = now - (count * units[i]);
-
-          //add the appropriate number of zeroes
-          output[i] = defaultZeros(output[i], unitLength[i], false);
-        }
+        //reduce the time by the unit calculated
+        milliseconds = milliseconds - (count * units[i]);
       }
 
-      return format(output);
+      //add the appropriate number of zeroes
+      if(i === 0 && beforeTime)
+      {
+        output[i] = defaultZeros(output[i], unitLength[i], true);
+      }
+      else
+      {
+        output[i] = defaultZeros(output[i], unitLength[i], false);
+      }
     }
-    else
-    {
-      //no need to adjust for pre-time and can just return the currnet time
-      return self.toTime(now);
-    }
+
+    return output;
   }
+
+   /**
+    * Calculate specific unit from Earth Time to fictional time
+    * @function toFictionalUnit
+    * @since 2.0
+    * @param {int} milliseconds
+    * @param {int} toUnit To which unit should be the conversion done
+    * @return {int} The calculated number
+    */
+  this.toFictionalUnit = function(milliseconds, toUnit)
+  {
+    return milliseconds / units[toUnit];
+  }
+
+  /**
+   * Calculate specific unit from fictional time to milliseconds
+   * @function unitToMilliseconds
+   * @since 2.0
+   * @param {int} count Number of units
+   * @param {int} unit From what unit are we doing the conversion
+   * @return {int} The calculated number in milliseconds
+   */
+   this.unitToMilliseconds = function(count, unit)
+   {
+     return count * units[unit];
+   }
+
+   /**
+    * Transforms the fictional date to milliseconds
+    * @function fictionalDateToMilliseconds
+    * @since 2.0
+    * @param {string} dateString
+    * @return {int} milliseconds
+    */
+   this.fictionalDateToMilliseconds = function(dateString)
+   {
+     var calculatedTime = 0;
+     //first split time based on separators into an array
+     var splitters = "";
+     for (var i = 0; i < separators.length; i++) {
+       if(splitters.match(separators[i]) === null)
+       {
+         //we add the new symbol
+         splitters += separators[i];
+       }
+     }
+     //make it regex
+     splitters = new regex(splitters);
+
+     //split
+     var date = dateString.split(splitters);
+
+     //validate that we have split correctly
+     if(date.length !== units.length)
+     {
+       //time declarations might be throwing us of
+       /** @todo try to remove time declarations and test again */
+       //that would be the first and last entry
+       return "The entered date is incorrectly formated.";
+     }
+
+     //validate that all entries are numbers
+     for (var i = 0; i < date.length; i++)
+     {
+       //http://stackoverflow.com/questions/3885817/how-to-check-if-a-number-is-float-or-integer
+       if( (!(Number(date[i]) === date[i]) && !(date[i]%1===0)) || date[i] === " " || date[i] === null || date[i] === "")
+       {
+         return "Not all the entries are numeric. Can't calculate.";
+       }
+       //convert to int
+       date[i] = +date[i];
+
+       //Transform unit into milliseconds
+       calculatedTime += self.unitToMilliseconds(date[i] , i);
+
+       //determine if before time beginning - first number would be negative
+       if(i === 0)
+       {
+         if(date[i] < 0)
+         {
+           //before begginning = beginning - calculatedTime
+           calculatedTime = begginning - calculatedTime;
+         }
+         else
+         {
+           //if after time begginning then add the time to begginning
+           calculatedTime =calculatedTime + beginning;
+         }
+       }
+     }
+     return calculatedTime;
+   }
 
   /**
    * Account for default zeros in the given fields
@@ -145,12 +266,11 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
     for (var i = 0; i < add; i++) {
 
       number = "0" + number;
-
-      //account for minus
-      if(minus && i === add-1)
-      {
-        number = "-" + number;
-      }
+    }
+    //account for minus
+    if(minus)
+    {
+      number = "-" + number;
     }
 
     return number;
