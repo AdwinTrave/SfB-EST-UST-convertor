@@ -94,7 +94,7 @@ function todayLocal(){
  * Calculates current SUT time for the local time
  */
 function countdownToBegin(){
-  $("#countdownToBegin").text(sut.toDate(Date.now()));
+  $("#countdownToBegin").text(sut.toTime(timeBegins.valueOf() - Date.now()));
 
   setTimeout(countdownToBegin, 1000);
 }
@@ -143,7 +143,7 @@ function earthYearsToSUT(earthYear)
  * Gets an Earth date and converts it to SUT date
  */
 function earthDateToSUT(earthDate){
-  return sut.toTime(moment(earthDate).valueOf());
+  return sut.toDate(moment(earthDate).valueOf());
 }
 
 
@@ -174,7 +174,7 @@ function sutDateToEY(sutDate){
   //validate input
   if(day > 500)
   {
-    return "SUT Year has only 500 days. Which means you should enter days between 000 to 499";
+    return "SUT Year has only 500 days. Which means you should enter days between 000 to 499.";
   }
 
   //get the seconds for the years
