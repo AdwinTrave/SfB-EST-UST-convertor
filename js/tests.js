@@ -32,6 +32,23 @@ QUnit.test("toDate",  function( assert ){
   assert.deepEqual(sut.toDate(30000000000000), "SUT 328.305 01:64:00", "Calculate date of 2920-08-30T05:20:00.000Z in SUT");
 });
 
+QUnit.test("toFictionalUnit", function( assert ){
+  assert.deepEqual(sut.toFictionalUnit(10000, 4), 10, "SUT seconds");
+  assert.deepEqual(sut.toFictionalUnit(100000, 3), 1, "SUT minutes");
+  assert.deepEqual(sut.toFictionalUnit(10000000, 2), 1, "SUT hours");
+  assert.deepEqual(sut.toFictionalUnit(100000000, 1), 1, "SUT years");
+  assert.deepEqual(sut.toFictionalUnit(550000000000, 0), 11, "SUT years");
+  assert.deepEqual(sut.toFictionalUnit(10550000000000, 0), 211, "SUT years");
+});
+
+QUnit.test("unitToMilliseconds", function( assert ){
+  assert.deepEqual(sut.unitToMilliseconds(10, 4), 10000, "10 SUT seconds -> milliseconds");
+  assert.deepEqual(sut.unitToMilliseconds(1, 3), 100000, "1 SUT minute -> milliseconds");
+  assert.deepEqual(sut.unitToMilliseconds(10, 2), 100000000, "10 SUT hours -> milliseconds");
+  assert.deepEqual(sut.unitToMilliseconds(1, 0), 50000000000, "SUT year -> milliseconds");
+  assert.deepEqual(sut.unitToMilliseconds(211, 0), 10550000000000, "211 SUT years -> milliseconds");
+});
+
 //main page converters testing
 QUnit.test("SUTyearsToEarth", function ( assert ){
   assert.equal(SUTyearsToEarth(15.8112), 25);

@@ -77,6 +77,32 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
   }
 
   /**
+   * Calculate specific unit from Earth Time to fictional time
+   * @function toFictionalUnit
+   * @since 2.0
+   * @param {int} milliseconds
+   * @param {int} toUnit To which unit should be the conversion done
+   * @return {int} The calculated number
+   */
+ this.toFictionalUnit = function(milliseconds, toUnit)
+ {
+   return milliseconds / units[toUnit];
+ }
+
+ /**
+  * Calculate specific unit from fictional time to milliseconds
+  * @function unitToMilliseconds
+  * @since 2.0
+  * @param {int} count Number of units
+  * @param {int} unit From what unit are we doing the conversion
+  * @return {int} The calculated number in milliseconds
+  */
+  this.unitToMilliseconds = function(count, unit)
+  {
+    return count * units[unit];
+  }
+
+  /**
    * Calculates the fictional time
    * @function calculate
    * @since 2.0
@@ -152,32 +178,6 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
 
     return output;
   }
-
-   /**
-    * Calculate specific unit from Earth Time to fictional time
-    * @function toFictionalUnit
-    * @since 2.0
-    * @param {int} milliseconds
-    * @param {int} toUnit To which unit should be the conversion done
-    * @return {int} The calculated number
-    */
-  this.toFictionalUnit = function(milliseconds, toUnit)
-  {
-    return milliseconds / units[toUnit];
-  }
-
-  /**
-   * Calculate specific unit from fictional time to milliseconds
-   * @function unitToMilliseconds
-   * @since 2.0
-   * @param {int} count Number of units
-   * @param {int} unit From what unit are we doing the conversion
-   * @return {int} The calculated number in milliseconds
-   */
-   this.unitToMilliseconds = function(count, unit)
-   {
-     return count * units[unit];
-   }
 
   /**
    * Account for default zeros in the given fields
