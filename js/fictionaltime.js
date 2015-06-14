@@ -4,29 +4,52 @@
  * from provided milliseconds.
  * @author Jan Dvorak IV.
  * @copyright All rights reserved
- * @version 2.0
+ * @version 2.1
  * @since 2.0
  * @todo right now this class can only handle simetric times, will need to improve to handle more diverse times (test on Mayan calendar, then Augustine calendar - the main issue is the length of months)
  */
 
 /**
  * The main object
+ * @param {string} name Name of the time
  * @param {array} units Array of units lengths (int)
  * @param {array} unitsSpace how many spaces does the unit take (int)
  * @param {int} beginning The Earth Day the time beginnins in milliseconds - @todo make optional - ie. can be null
  * @param {array} separators Separations between the units
  * @param {string} declaration Where should be the time declaration displayed - before, after, both, false
  */
-function fictionalTime(units, unitsSpace, beginning, separators, declaration){
+function fictionalTime(name, units, beginning, separators, declaration){
   var self = this;
 
   //all inserted variables are public
   /** @todo revisit */
+  this.name = name;
   this.units = units;
-  this.unitsSpace = unitsSpace;
   this.beginning = beginning;
   this.separators = separators;
   this.declaration = declaration;
+
+  //calculate unit spaces for adding appropriate number of zeroes
+  var unitLength = [];
+  for (var i = 0; i < units.length; i++) {
+    if(i === 0)
+    {
+      unitLength[i] = 0;
+    }
+    else
+    {
+      var count = (units[i-1] / units[i]).toString();
+      if(count[0] == 1)
+      {
+        //account for symetric times with  10, 100, etc.
+        unitLength[i] = count.length - 1;
+      }
+      else
+      {
+        unitLength[i] = count.length;
+      }
+    }
+  }
 
   /**
    * Calculates the time from milliseconds
@@ -116,6 +139,14 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
 
     //evaluate preTime
     var beforeTime = false;
+
+    //fix crazy values
+    if(milliseconds < 0)
+    {
+      milliseconds = Math.abs(milliseconds);
+    }
+
+    //console.log("At start: " + milliseconds);
     if(preTime)
     {
       if(beginning > milliseconds)
@@ -174,6 +205,7 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
       {
         output[i] = defaultZeros(output[i], unitLength[i], false);
       }
+      //console.log("Unit " + i + " reminder after: " + milliseconds);
     }
 
     return output;
@@ -189,12 +221,12 @@ function fictionalTime(units, unitsSpace, beginning, separators, declaration){
    * @return {string} the number with added default zeroes
    * @todo Improve that unitLength can handle more then size 3, use length of the current number to determine how many zeroes need to be added before
    */
-  function defaultZeros(number, unitLength, minus){
+  function defaultZeros(number, uLength, minus){
 
     number = number.toString();
 
     //first determine how many zeroes need to be added
-    var add = unitLength - number.length;
+    var add = uLength - number.length;
 
     //add the zeroes before the given number
     for (var i = 0; i < add; i++) {

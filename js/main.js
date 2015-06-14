@@ -14,14 +14,14 @@ var unit4 = unit3 * 10;
 var unit5 = unit4 * 500;
 
 var unitArray = [unit5, unit4, unit3, unit2, unit1]; //must be in order from the largest to smallest
-var unitLength = [3, 3, 2, 2, 2]; //default length of each unit space, ie. 001 - 3, 100 - 3, 59 - 2, maximum is 3 right now
 var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
 var timeBegins = moment("2400-01-01 00:00"); //the moment when time begins in relation to Earth time
+console.log(timeBegins.valueOf());
 
 //create the object
-var sut = new fictionalTime(unitArray, unitLength, timeBegins.valueOf(), unitSeparator, unitDeclaration);
+var sut = new fictionalTime("Standard Universal Time", unitArray, timeBegins.valueOf(), unitSeparator, unitDeclaration);
 
 //old variables
 var sutMinuteSec = 100;
@@ -94,7 +94,7 @@ function todayLocal(){
  * Calculates current SUT time for the local time
  */
 function countdownToBegin(){
-  $("#countdownToBegin").text(sut.toTime(timeBegins.valueOf() - Date.now()));
+  $("#countdownToBegin").text(sut.toTime(sut.beginning - Date.now()));
 
   setTimeout(countdownToBegin, 1000);
 }

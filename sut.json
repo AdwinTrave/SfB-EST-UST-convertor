@@ -1,0 +1,7 @@
+{
+  "name": "Standard Universal Time",
+  "beginning": 13569483600000,
+  "units": [50000000000, 100000000, 10000000, 100000, 1000],
+  "separators": ["SUT ", ".", " ", ":", ":", ""],
+  "declaration": "before"
+}
