@@ -17,7 +17,7 @@ var unitArray = [unit5, unit4, unit3, unit2, unit1]; //must be in order from the
 var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
-var timeBegins = moment("2400-01-01 00:00"); //the moment when time begins in relation to Earth time
+var timeBegins = moment("2400/01/01 00:00 GMT"); //the moment when time begins in relation to Earth time
 console.log(timeBegins.valueOf());
 
 //create the object
@@ -143,7 +143,7 @@ function earthYearsToSUT(earthYear)
  * Gets an Earth date and converts it to SUT date
  */
 function earthDateToSUT(earthDate){
-  return sut.toDate(moment(earthDate).valueOf());
+  return sut.toDate(moment.utc(earthDate).valueOf());
 }
 
 
@@ -184,5 +184,5 @@ function sutDateToEY(sutDate){
 
   //add year 2400
   milliseconds = timeBegins.valueOf() + milliseconds;
-  return moment(milliseconds).format('YYYY-MM-DD');
+  return moment.utc(milliseconds).format('YYYY-MM-DD');
 }

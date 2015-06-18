@@ -9,7 +9,11 @@ var unitArray = [unit5, unit4, unit3, unit2, unit1]; //must be in order from the
 var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines what symbols will be between different
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
-var timeBegins = moment("2400-01-01 00:00"); //the moment when time begins in relation to Earth time
+var timeBegins = moment("2400/01/01 00:00 GMT"); //the moment when time begins in relation to Earth time
+
+QUnit.test("Correct starting time", function( assert ){
+  assert.deepEqual(timeBegins.valueOf(), 13569465600000);
+});
 
 //create the object
 var sut = new fictionalTime("Standard Universal Time", unitArray, timeBegins.valueOf(), unitSeparator, unitDeclaration);
@@ -27,8 +31,8 @@ QUnit.test("toTime", function( assert ){
 });
 
 QUnit.test("toDate",  function( assert ){
-  assert.deepEqual(sut.toDate(10000), "SUT -271.306 2:65:10", "Calculate date of 1970-01-01T00:00:10.000Z in SUT");
-  assert.deepEqual(sut.toDate(30000000000000), "SUT 328.305 1:64:00", "Calculate date of 2920-08-30T05:20:00.000Z in SUT");
+  assert.deepEqual(sut.toDate(10000), "SUT -271.306 4:45:10", "Calculate date of 1970-01-01T00:00:10.000Z in SUT");
+  assert.deepEqual(sut.toDate(30000000000000), "SUT 328.305 3:44:00", "Calculate date of 2920-08-30T05:20:00.000Z in SUT");
 });
 
 QUnit.test("toFictionalUnit", function( assert ){
@@ -48,6 +52,8 @@ QUnit.test("unitToMilliseconds", function( assert ){
   assert.deepEqual(sut.unitToMilliseconds(211, 0), 10550000000000, "211 SUT years -> milliseconds");
 });
 
+/** @todo devise a test for sut.currentTime() */
+
 //main page converters testing
 QUnit.test("SUTyearsToEarth", function ( assert ){
   assert.equal(SUTyearsToEarth(15.8112), 25);
@@ -58,8 +64,8 @@ QUnit.test("earthYearsToSUT", function ( assert ){
 });
 
 QUnit.test("earthDateToSUT", function( assert ){
-  assert.deepEqual(earthDateToSUT("2300-07-23"), "SUT -62.119 7:20:00", "Before SUT");
-  assert.deepEqual(earthDateToSUT("2400-07-23"), "SUT 0.176 2:20:00", "SUT date");
+  assert.deepEqual(earthDateToSUT("2300-07-23"), "SUT -62.119 7:56:00", "Before SUT");
+  assert.deepEqual(earthDateToSUT("2400-07-23"), "SUT 0.176 2:56:00", "SUT date");
 });
 
 QUnit.test("sutDateToEY", function( assert ){

@@ -19,8 +19,6 @@
  * @param {string} declaration Where should be the time declaration displayed - before, after, both, false
  */
 function fictionalTime(name, units, beginning, separators, declaration){
-  var self = this;
-
   //all inserted variables are public
   /** @todo revisit */
   this.name = name;
@@ -94,7 +92,10 @@ function fictionalTime(name, units, beginning, separators, declaration){
   {
     //first get current time in milliseconds
     var now = Date.now();
-    var output = calculate(now, true);
+    //then get the offset
+    var offset = new Date().getTimezoneOffset() * 60000;
+    //calculate current time
+    var output = calculate(new Date(now + offset), true);
 
     return format(output);
   }
