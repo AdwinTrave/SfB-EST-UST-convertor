@@ -32,7 +32,7 @@ $(function(){
     }
     else
     {
-      addPoint.after('<div data-alert class="alert-box warning">That is enough for now. If you really have such complex time, contact me to get around this. I\'m really curious about your universe now.</div>');
+      addPoint.after('<div data-alert class="alert-box warning">That is enough for now. If you really have such complex time, contact me (@storyteller_cz) to get around this. I\'m really curious about your universe now.</div>');
     }
   });
 

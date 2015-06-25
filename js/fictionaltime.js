@@ -51,7 +51,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Calculates the time from milliseconds
-   * @function toTime
+   * @method toTime
    * @since 1.0
    * @param {int} milliseconds milliseconds that should be translated into the fictional time.
    * @return {string} Formated time display
@@ -68,7 +68,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
   /**
    * Calculates the time from milliseconds and takes into account if the time
    * is before the beginning of the fictional time or not.
-   * @function toDate
+   * @method toDate
    * @since 2.0
    * @param {int} milliseconds milliseconds that should be translated into the fictional time.
    * @return {string} Formated time display
@@ -84,7 +84,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Current time
-   * @function current
+   * @method current
    * @since 2.0
    * @return {string} Formated current time in the fictional time
    */
@@ -102,7 +102,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Calculate specific unit from Earth Time to fictional time
-   * @function toFictionalUnit
+   * @method toFictionalUnit
    * @since 2.0
    * @param {int} milliseconds
    * @param {int} toUnit To which unit should be the conversion done
@@ -115,7 +115,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
  /**
   * Calculate specific unit from fictional time to milliseconds
-  * @function unitToMilliseconds
+  * @method unitToMilliseconds
   * @since 2.0
   * @param {int} count Number of units
   * @param {int} unit From what unit are we doing the conversion
@@ -128,7 +128,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Calculates the fictional time
-   * @function calculate
+   * @method calculate
    * @since 2.0
    * @param {int} milliseconds The time to be calculated
    * @param {boolean} preTime Should the time be evaluated if it is before the establishment of the time?
@@ -214,7 +214,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Account for default zeros in the given fields
-   * @function defaultZeros
+   * @method defaultZeros
    * @since 1.0
    * @param {int} number Number that should get the default zeroes before it in order to hold format
    * @param {int} unitLength How long is the given unit 1 through 3
@@ -245,7 +245,7 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
   /**
    * Function to return the time in the correct format
-   * @function format
+   * @method format
    * @since 1.1
    * @param {array} array with the values for each fields
    * @return {string}

@@ -1,6 +1,4 @@
 # CHANGELOG
-
-
 ## v2.1 - [in development]
 ### Additions
 * Increased test coverage
@@ -8,7 +6,7 @@
 * How to use in Readme
 
 ### Fixes
-* Incorrect starting time creation based on local time instead of on GMT
+* Incorrect starting time creation based on local time instead of on UTC
 
 ## v2.0 - released June 7 2015
 ### Changes

@@ -18,7 +18,6 @@ var unitSeparator = ["SUT ", ".", " ", ":", ":", ""]; //formating, determines wh
 var unitDeclaration = "before"; //options: before, after, both, false - additional option for unitSeparator to show time declaration like SUT xxxx
 
 var timeBegins = moment("2400/01/01 00:00 GMT"); //the moment when time begins in relation to Earth time
-console.log(timeBegins.valueOf());
 
 //create the object
 var sut = new fictionalTime("Standard Universal Time", unitArray, timeBegins.valueOf(), unitSeparator, unitDeclaration);
