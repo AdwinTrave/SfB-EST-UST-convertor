@@ -165,6 +165,12 @@ function fictionalTime(name, units, beginning, separators, declaration){
 
     for (var i = 0; i < units.length; i++)
     {
+      //first calculate how many units are there
+      var count = Math.floor( Math.abs( milliseconds / units[i]) );
+
+      //calculate what is the maximum of the given unit
+      var max = units[i-1] / units[i];
+
       /**
        * Assuming that the biggest unit is equivalent to years it should be counting down.
        * Other units should be going up as normal clocks.
@@ -172,31 +178,33 @@ function fictionalTime(name, units, beginning, separators, declaration){
       if(i === 0 || !beforeTime)
       {
         //calculate how much of the given unit is there in the time
-        output[i] = Math.floor( Math.abs(milliseconds / units[i]) );
+        output[i] = count;
 
-        //reduce the time by the unit calculated
-        milliseconds = milliseconds - (output[i] * units[i]);
+        //account for getting the max unit
+        if(count === max)
+        {
+          output[i] = 0;
+          output[i-1] = parseInt(output[i-1]) + 1;
+        }
       }
       else
       {
-        //first calculate how many units are there
-        var count = Math.floor( Math.abs( milliseconds / units[i]) );
-
-        //now calculate what is the maximum of the given unit
-        var max = units[i-1] / units[i];
-
         //now get the correct number that is going to be increasing
         output[i] = max-count;
         //account for getting the max number displayed
-        if(count === 0)
+        if(count === max)
         {
           output[i] = 0;
+          output[i-1] = parseInt(output[i-1]) - 1;
         }
-
-        //reduce the time by the unit calculated
-        milliseconds = milliseconds - (count * units[i]);
       }
+      //reduce the time by the unit calculated
+      milliseconds = milliseconds - (count * units[i]);
+    }
 
+    //have to have another loop due to lines 187 and 198
+    for (var i = 0; i < units.length; i++)
+    {
       //add the appropriate number of zeroes
       if(i === 0 && beforeTime)
       {
